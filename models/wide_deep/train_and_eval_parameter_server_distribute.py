@@ -147,6 +147,7 @@ def train_and_eval(config):
 context.set_context(mode=context.GRAPH_MODE, device_target=cfg.device_target)
 cache_enable = cfg.vocab_cache_size > 0
 
+
 def train_wide_and_deep():
     """ train_wide_and_deep """
     context.set_ps_context(enable_ps=True)
@@ -156,8 +157,7 @@ def train_wide_and_deep():
 
     if cache_enable:
         if os.getenv("MS_ROLE") == "MS_WORKER":
-            context.set_auto_parallel_context(
-                parallel_mode=ParallelMode.AUTO_PARALLEL, gradients_mean=True)
+            context.set_auto_parallel_context(parallel_mode=ParallelMode.AUTO_PARALLEL)
     else:
         context.set_auto_parallel_context(parallel_mode=ParallelMode.DATA_PARALLEL, gradients_mean=True,
                                           device_num=get_group_size())
@@ -167,6 +167,7 @@ def train_wide_and_deep():
         context.set_context(enable_graph_kernel=True)
         context.set_context(graph_kernel_flags="--enable_cluster_ops=MatMul")
     train_and_eval(cfg)
+
 
 if __name__ == "__main__":
     train_wide_and_deep()
